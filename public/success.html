@@ -109,6 +109,18 @@
     loading.textContent = msg || "No hemos podido confirmar el pago. Si se te cobró, contacta con soporte.";
   }
 
+  // Modo sin estado: la licencia llega en la propia URL.
+  if (params.get("token")) {
+    render({
+      plan: params.get("plan") || "pro",
+      hosts: parseInt(params.get("hosts"), 10) || 1,
+      billing: params.get("billing") || "monthly",
+      license: params.get("token"),
+      expires_at: params.get("exp") || null
+    });
+    return;
+  }
+
   if (!ref) { fail("Falta la referencia del pedido."); return; }
 
   var tries = 0;

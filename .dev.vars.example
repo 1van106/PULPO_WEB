@@ -1,0 +1,10 @@
+# Secretos para desarrollo local con `wrangler pages dev`.
+# Copia este fichero a `.dev.vars` (ignorado por git) y ajusta el valor.
+#
+# Genera un secreto propio:
+#   node -e "console.log(crypto.randomUUID()+crypto.randomUUID())"
+#
+# En producción, configúralo en Cloudflare:
+#   wrangler pages secret put LICENSE_SECRET
+
+LICENSE_SECRET=cambia-esto-por-un-secreto-largo-y-aleatorio

@@ -1,21 +1,12 @@
 # Dependencias
 node_modules/
 
-# Variables de entorno (secretos)
-.env
-.env.local
+# Secretos locales de Wrangler
+.dev.vars
+.dev.vars.local
 
-# Base de datos local
-data/*.db
-data/*.db-journal
-data/*.db-wal
-data/*.db-shm
-
-# Binarios de descarga reales (no versionar artefactos pesados)
-downloads/*.AppImage
-downloads/*.deb
-downloads/*.rpm
-downloads/*.tar.gz
+# Estado local de Wrangler / D1
+.wrangler/
 
 # Logs y sistema
 *.log

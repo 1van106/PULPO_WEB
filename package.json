@@ -1,29 +1,20 @@
 {
   "name": "pulpo-web",
   "version": "1.0.0",
-  "description": "Sitio comercial de PULPO IDS/IPS — landing + backend de checkout, licencias y captación de leads",
-  "type": "module",
-  "main": "src/server.js",
+  "private": true,
+  "description": "Sitio comercial de PULPO IDS/IPS — landing + backend (Cloudflare Pages Functions + D1)",
   "scripts": {
-    "start": "node --disable-warning=ExperimentalWarning src/server.js",
-    "dev": "node --disable-warning=ExperimentalWarning --watch src/server.js"
+    "dev": "wrangler pages dev public",
+    "dev:d1": "wrangler pages dev public --d1 DB=pulpo",
+    "deploy": "wrangler pages deploy public",
+    "db:create": "wrangler d1 create pulpo",
+    "db:schema": "wrangler d1 execute pulpo --remote --file schema.sql",
+    "db:schema:local": "wrangler d1 execute pulpo --local --file schema.sql"
   },
-  "keywords": [
-    "pulpo",
-    "ids",
-    "ips",
-    "stripe",
-    "saas",
-    "landing"
-  ],
+  "keywords": ["pulpo", "ids", "ips", "cloudflare", "pages", "d1", "landing"],
   "author": "Iván Batista",
   "license": "MIT",
-  "engines": {
-    "node": ">=22.5"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "stripe": "^17.5.0"
+  "devDependencies": {
+    "wrangler": "^3.95.0"
   }
 }

@@ -1,0 +1,16 @@
+name = "pulpo-web"
+pages_build_output_dir = "public"
+compatibility_date = "2024-11-01"
+
+# ── Persistencia opcional con Cloudflare D1 ──────────────────────────
+# El sitio funciona sin esto (modo sin estado: las licencias se firman y
+# entregan igual). Para guardar pedidos, licencias, leads y descargas:
+#
+#   1) npm run db:create          # crea la base y te da el database_id
+#   2) pega el database_id abajo y descomenta el bloque
+#   3) npm run db:schema          # crea las tablas en remoto
+#
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "pulpo"
+# database_id = "PEGA_AQUI_TU_DATABASE_ID"
