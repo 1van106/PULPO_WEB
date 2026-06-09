@@ -1,0 +1,29 @@
+{
+  "name": "pulpo-web",
+  "version": "1.0.0",
+  "description": "Sitio comercial de PULPO IDS/IPS — landing + backend de checkout, licencias y captación de leads",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning src/server.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch src/server.js"
+  },
+  "keywords": [
+    "pulpo",
+    "ids",
+    "ips",
+    "stripe",
+    "saas",
+    "landing"
+  ],
+  "author": "Iván Batista",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "stripe": "^17.5.0"
+  }
+}

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PULPO — IDS/IPS Monitor · Detección de intrusiones en tiempo real</title>
+<meta name="description" content="PULPO analiza tus logs en streaming, correlaciona eventos y bloquea intrusiones automáticamente. 100% on-premise.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pulpo.css">
+</head>
+<body>
+
+<!-- ===== SVG symbol library ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-logo" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 2.5 L26.5 6.2 V14.5 C26.5 21.5 22.3 26.8 16 29.5 C9.7 26.8 5.5 21.5 5.5 14.5 V6.2 Z"></path>
+      <path d="M11.5 14.5 a4.5 4.5 0 0 1 9 0 v0.8"></path>
+      <path d="M11.5 15.3 q-0.4 2.2 -2.6 3.2"></path>
+      <path d="M13.8 16.8 q-0.3 2.6 -2 4"></path>
+      <path d="M18.2 16.8 q0.3 2.6 2 4"></path>
+      <path d="M20.5 15.3 q0.4 2.2 2.6 3.2"></path>
+      <path d="M16 17.2 v2.4 q0 1.6 -1.4 2.2"></path>
+      <circle cx="14.2" cy="13.4" r="0.5" fill="currentColor" stroke="none"></circle>
+      <circle cx="17.8" cy="13.4" r="0.5" fill="currentColor" stroke="none"></circle>
+    </symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+      <path d="M7 9 l3 3 -3 3"></path><path d="M12.5 15 H17"></path>
+    </symbol>
+    <symbol id="i-filecode" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2 H6 a2 2 0 0 0 -2 2 v16 a2 2 0 0 0 2 2 h12 a2 2 0 0 0 2 -2 V8 Z"></path>
+      <path d="M14 2 v6 h6"></path><path d="M10 12 l-2 2.5 2 2.5"></path><path d="M14 12 l2 2.5 -2 2.5"></path>
+    </symbol>
+    <symbol id="i-network" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="5" cy="6" r="2.5"></circle><circle cx="19" cy="6" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle>
+      <path d="M6.8 7.8 L10.5 16"></path><path d="M17.2 7.8 L13.5 16"></path><path d="M7.5 6 H16.5"></path>
+    </symbol>
+    <symbol id="i-shieldzap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2 L20 5 V11 C20 16.5 16.5 20.3 12 22 C7.5 20.3 4 16.5 4 11 V5 Z"></path>
+      <path d="M12.5 7.5 L9.5 12.5 H12 L11.5 16.5 L14.5 11.5 H12 Z"></path>
+    </symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12 H7 L10 5 L14 19 L17 12 H21"></path>
+    </symbol>
+    <symbol id="i-database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <ellipse cx="12" cy="5.5" rx="8" ry="3"></ellipse>
+      <path d="M4 5.5 V18.5 C4 20.2 7.6 21.5 12 21.5 C16.4 21.5 20 20.2 20 18.5 V5.5"></path>
+      <path d="M4 12 C4 13.7 7.6 15 12 15 C16.4 15 20 13.7 20 12"></path>
+    </symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4.5" y="10.5" width="15" height="10" rx="2"></rect>
+      <path d="M8 10.5 V7.5 a4 4 0 0 1 8 0 v3"></path><circle cx="12" cy="15.5" r="1.4"></circle>
+    </symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12 C5.5 7.5 8.5 5.5 12 5.5 C15.5 5.5 18.5 7.5 21 12 C18.5 16.5 15.5 18.5 12 18.5 C8.5 18.5 5.5 16.5 3 12 Z"></path>
+      <path d="M4 4 L20 20"></path>
+    </symbol>
+    <symbol id="i-git" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="6" cy="6" r="2.5"></circle><circle cx="6" cy="18" r="2.5"></circle><circle cx="18" cy="9" r="2.5"></circle>
+      <path d="M6 8.5 V15.5"></path><path d="M15.7 10.5 C13 12.5 9 12 6 13.5"></path>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4.5 12.5 L9.5 17.5 L19.5 7"></path>
+    </symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 9 L12 15 L18 9"></path>
+    </symbol>
+    <symbol id="i-github" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 19 c-4 1.5 -4 -2.5 -6 -3 m12 5 v-3.5 c0 -1 .1 -1.4 -.5 -2 2.8 -.3 5.5 -1.4 5.5 -6 a4.6 4.6 0 0 0 -1.3 -3.2 4.2 4.2 0 0 0 -.1 -3.2 s-1.1 -.3 -3.5 1.3 a12.3 12.3 0 0 0 -6.2 0 C6.5 2.8 5.4 3.1 5.4 3.1 a4.2 4.2 0 0 0 -.1 3.2 A4.6 4.6 0 0 0 4 9.5 c0 4.6 2.7 5.7 5.5 6 -.6 .6 -.6 1.2 -.5 2 V21"></path>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ===== Navbar ===== -->
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="nav-logo" href="#" aria-label="PULPO — inicio">
+      <svg width="30" height="30" style="color:var(--accent)"><use href="#i-logo"></use></svg>
+      <span>PULPO</span>
+      <small>IDS/IPS</small>
+    </a>
+    <button class="nav-burger" id="navBurger" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#producto">Producto</a></li>
+      <li><a href="#caracteristicas">Características</a></li>
+      <li><a href="#precios">Precios</a></li>
+      <li><a href="#faq">Documentación</a></li>
+      <li><a href="https://github.com/1van106/PULPO__IDS-IPS" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+    <a class="btn btn-primary btn-sm nav-cta" href="#precios">Descargar</a>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="hero" id="producto" data-screen-label="Hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="hero-eyebrow"><span class="pulse-dot" aria-hidden="true"></span> v2.4 · open core · Linux</span>
+      <h1>Detección de intrusiones en <em>tiempo real</em>, sin la complejidad de un SIEM</h1>
+      <p class="hero-sub">PULPO analiza tus logs en streaming, aplica reglas de detección, correlaciona eventos por IP y sesión, y responde automáticamente — todo desde un dashboard en vivo, dentro de tu propia red.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary btn-lg" href="#precios">Empezar gratis</a>
+        <a class="btn btn-outline btn-lg" href="#producto">Ver demo en vivo</a>
+      </div>
+      <p class="hero-note">$ curl -sSL get.pulpo.sh | bash — desplegado en &lt; 5 min</p>
+    </div>
+
+    <!-- Dashboard mockup -->
+    <div class="dash" role="img" aria-label="Captura del dashboard de PULPO mostrando eventos en tiempo real">
+      <div class="dash-bar">
+        <span class="dash-dots"><i></i><i></i><i></i></span>
+        <span class="dash-title">pulpo://soc-01 · dashboard</span>
+        <span class="badge-stream"><span class="pulse-dot"></span>STREAMING</span>
+      </div>
+      <div class="dash-body">
+        <div class="dash-panel dash-chart">
+          <h4>Eventos / min · últimas 2 h</h4>
+          <svg viewBox="0 0 320 110" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.32"></stop>
+                <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"></stop>
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="30" x2="320" y2="30" stroke="#f85149" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"></line>
+            <path d="M0 92 L20 88 L40 90 L60 80 L80 84 L100 70 L120 76 L140 58 L160 64 L180 44 L200 52 L220 38 L240 47 L260 33 L280 42 L300 26 L320 34 L320 110 L0 110 Z" fill="url(#areaFill)"></path>
+            <path d="M0 92 L20 88 L40 90 L60 80 L80 84 L100 70 L120 76 L140 58 L160 64 L180 44 L200 52 L220 38 L240 47 L260 33 L280 42 L300 26 L320 34" fill="none" stroke="#00d4ff" stroke-width="1.8"></path>
+            <circle cx="320" cy="34" r="3" fill="#00d4ff"></circle>
+          </svg>
+        </div>
+        <div class="dash-side">
+          <div class="dash-panel">
+            <h4>Severidad · 24 h</h4>
+            <div class="donut-wrap">
+              <svg width="64" height="64" viewBox="0 0 42 42" aria-hidden="true">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#21262d" stroke-width="6"></circle>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#3fb950" stroke-width="6" stroke-dasharray="46 54" stroke-dashoffset="25"></circle>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#58a6ff" stroke-width="6" stroke-dasharray="28 72" stroke-dashoffset="-21"></circle>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#d29922" stroke-width="6" stroke-dasharray="17 83" stroke-dashoffset="-49"></circle>
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#f85149" stroke-width="6" stroke-dasharray="9 91" stroke-dashoffset="-66"></circle>
+              </svg>
+              <div class="donut-legend">
+                <span><i style="background:var(--crit)"></i>Crítica · 9%</span>
+                <span><i style="background:var(--high)"></i>Alta · 17%</span>
+                <span><i style="background:var(--med)"></i>Media · 28%</span>
+                <span><i style="background:var(--ok)"></i>Info · 46%</span>
+              </div>
+            </div>
+          </div>
+          <div class="dash-panel">
+            <h4>Estado</h4>
+            <div class="dash-kpis">
+              <div class="dash-kpi"><span>Eventos hoy</span><b>48.217</b></div>
+              <div class="dash-kpi"><span>IPs bloqueadas</span><b style="color:var(--crit)">23</b></div>
+              <div class="dash-kpi"><span>Latencia</span><b style="color:var(--ok)">41 ms</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="dash-panel dash-table">
+          <h4>Alertas en vivo</h4>
+          <table>
+            <thead><tr><th>Hora</th><th>Sev.</th><th>Regla</th><th>Origen</th><th>Acción</th></tr></thead>
+            <tbody>
+              <tr><td>14:32:08</td><td><span class="sev sev-crit">CRIT</span></td><td>SSH brute-force (T1110)</td><td>203.0.113.42</td><td style="color:var(--crit)">BLOQUEADA</td></tr>
+              <tr><td>14:31:54</td><td><span class="sev sev-high">ALTA</span></td><td>Port scan secuencial</td><td>198.51.100.7</td><td style="color:var(--high)">VIGILANDO</td></tr>
+              <tr><td>14:31:12</td><td><span class="sev sev-med">MEDIA</span></td><td>Login fuera de horario</td><td>10.0.4.18</td><td>NOTIFICADA</td></tr>
+              <tr><td>14:30:47</td><td><span class="sev sev-ok">INFO</span></td><td>Nueva sesión sudo</td><td>10.0.2.5</td><td>REGISTRADA</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Metrics ===== -->
+<section class="metrics" aria-label="Métricas clave" data-screen-label="Métricas">
+  <div class="container metrics-row">
+    <div class="metric"><b><span data-count="14">14</span></b><span>reglas de detección preconfiguradas</span></div>
+    <div class="metric"><b><span class="metric-unit">&lt;</span><span data-count="50">50</span><span class="metric-unit">ms</span></b><span>latencia de detección</span></div>
+    <div class="metric"><b><span class="metric-text">ATT&amp;CK</span></b><span>mapeo MITRE en cada alerta</span></div>
+    <div class="metric"><b><span data-count="100">100</span><span class="metric-unit">%</span></b><span>on-premise — tus datos no salen de tu red</span></div>
+  </div>
+</section>
+
+<!-- ===== Features ===== -->
+<section class="section" id="caracteristicas" data-screen-label="Características">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-kicker">Características</p>
+      <h2>Todo lo que necesita un SOC pequeño. Nada de lo que no.</h2>
+      <p>Un único binario que ingiere, detecta, correlaciona y responde. Sin clústeres que mantener ni licencias por volumen de datos.</p>
+    </div>
+    <div class="features-grid">
+      <article class="feature-card reveal">
+        <span class="feature-icon"><svg width="22" height="22"><use href="#i-terminal"></use></svg></span>
+        <h3>Análisis de logs en streaming</h3>
+        <p>Ingesta continua de syslog, auth.log, journald y ficheros arbitrarios. Cada línea se evalúa en el momento en que se escribe.</p>
+      </article>
+      <article class="feature-card reveal">
+        <span class="feature-icon"><svg width="22" height="22"><use href="#i-filecode"></use></svg></span>
+        <h3>Motor de reglas YAML</h3>
+        <p>14 reglas listas para usar y un DSL en <code>YAML</code> para escribir las tuyas: regex, umbrales, ventanas temporales y severidad.</p>
+      </article>
+      <article class="feature-card reveal">
+        <span class="feature-icon"><svg width="22" height="22"><use href="#i-network"></use></svg></span>
+        <h3>Correlación inteligente</h3>
+        <p>Agrupa eventos por IP, sesión y ventana temporal para distinguir un ataque real de ruido: 50 logins fallidos no son 50 alertas.</p>
+      </article>
+      <article class="feature-card reveal">
+        <span class="feature-icon"><svg width="22" height="22"><use href="#i-shieldzap"></use></svg></span>
+        <h3>Respuesta automática</h3>
+        <p>Bloqueo inmediato del origen vía <code>iptables</code> con expiración configurable, listas blancas y modo solo-detección (IDS).</p>
+      </article>
+      <article class="feature-card reveal">
+        <span class="feature-icon"><svg width="22" height="22"><use href="#i-activity"></use></svg></span>
+        <h3>Dashboard en tiempo real</h3>
+        <p>Alertas, gráficos y estado del sistema empujados por <code>WebSocket</code> al navegador. Sin refrescar, sin esperar al cron.</p>
+      </article>
+      <article class="feature-card reveal">
+        <span class="feature-icon"><svg width="22" height="22"><use href="#i-database"></use></svg></span>
+        <h3>API REST + SQLite</h3>
+        <p>Consulta alertas y métricas desde tus herramientas con una API documentada. Persistencia embebida en <code>SQLite</code>, cero dependencias.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Pipeline ===== -->
+<section class="section pipeline-section" data-screen-label="Pipeline">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-kicker">Cómo funciona</p>
+      <h2>Del log a la respuesta en cinco etapas</h2>
+      <p>Un pipeline lineal y auditable: cada evento puede rastrearse de extremo a extremo.</p>
+    </div>
+    <div class="pipeline">
+      <div class="stage reveal"><span class="stage-num">01</span><h3>Ingesta</h3><p>Logs en streaming desde syslog, journald y ficheros</p></div>
+      <div class="stage reveal"><span class="stage-num">02</span><h3>Motor de Reglas</h3><p>Evaluación de cada línea contra reglas YAML</p></div>
+      <div class="stage reveal"><span class="stage-num">03</span><h3>Correlación</h3><p>Agrupación por IP, sesión y ventana temporal</p></div>
+      <div class="stage reveal"><span class="stage-num">04</span><h3>Respuesta</h3><p>Bloqueo automático vía iptables o modo IDS</p></div>
+      <div class="stage reveal"><span class="stage-num">05</span><h3>Alertas</h3><p>Dashboard, Slack, Telegram, email y API</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Pricing ===== -->
+<section class="section" id="precios" data-screen-label="Precios">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-kicker">Precios</p>
+      <h2>Precio por host. Sin sorpresas por volumen de datos.</h2>
+      <p>Empieza gratis con el core open source y escala cuando tu red lo haga.</p>
+    </div>
+
+    <div class="billing-toggle">
+      <span id="lblMonthly" class="on">Mensual</span>
+      <button class="switch" id="billingSwitch" role="switch" aria-checked="false" aria-label="Cambiar a facturación anual"></button>
+      <span id="lblAnnual">Anual</span>
+      <span class="save-pill">–20%</span>
+    </div>
+
+    <div class="plans">
+      <article class="plan reveal">
+        <h3>Community</h3>
+        <p class="plan-for">Estudiantes, homelab, 1 host</p>
+        <p class="plan-price"><b>0</b><span class="cur">€</span><span class="per">· open source</span></p>
+        <p class="plan-billnote">licencia MIT, para siempre</p>
+        <ul>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>IDS/IPS core completo</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span><b>14 reglas</b> de detección preconfiguradas</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>Dashboard local en tiempo real</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>Reglas YAML personalizadas</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>Soporte de la comunidad (GitHub)</span></li>
+        </ul>
+        <button class="btn btn-outline btn-block" data-action="download" data-plan="community">Descargar</button>
+      </article>
+
+      <article class="plan plan-popular reveal">
+        <span class="plan-flag">Más popular</span>
+        <h3>Pro</h3>
+        <p class="plan-for">Pymes y equipos pequeños</p>
+        <p class="plan-price"><b><span class="price-num" data-monthly="19" data-annual="15">19</span></b><span class="cur">€</span><span class="per">/ host / mes</span></p>
+        <p class="plan-billnote" data-monthly="facturación mensual, cancela cuando quieras" data-annual="facturado anualmente · ahorras un 20%">facturación mensual, cancela cuando quieras</p>
+        <ul>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span><b>Todo lo de Community</b>, más:</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>Monitorización <b>multi-host</b> centralizada</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>Threat intel: AbuseIPDB y VirusTotal</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>Notificaciones Slack, Telegram y email</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>API REST con autenticación</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>Retención de eventos 90 días</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>Soporte por email &lt; 24 h</span></li>
+        </ul>
+        <button class="btn btn-primary btn-block" data-action="checkout" data-plan="pro">Empezar prueba de 14 días</button>
+      </article>
+
+      <article class="plan reveal">
+        <h3>Enterprise</h3>
+        <p class="plan-for">SOC y grandes organizaciones</p>
+        <p class="plan-price"><b class="price-text">A medida</b></p>
+        <p class="plan-billnote">contrato anual · facturación por volumen</p>
+        <ul>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span><b>Todo lo de Pro</b>, más:</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>Hosts <b>ilimitados</b></span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>Correlación avanzada multi-fuente</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>Integración SIEM: Splunk y Elastic</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>SSO / LDAP y reportes PDF</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>SLA 24/7 y despliegue asistido</span></li>
+          <li><svg width="15" height="15"><use href="#i-check"></use></svg><span>Gestor de cuenta dedicado</span></li>
+        </ul>
+        <button class="btn btn-outline btn-block" data-action="contact" data-plan="enterprise">Contactar ventas</button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Compare table ===== -->
+<section class="section" style="padding-top:0" data-screen-label="Comparativa">
+  <div class="container">
+    <div class="section-head">
+      <h2 style="font-size:24px">Comparativa detallada</h2>
+    </div>
+    <div class="compare-wrap">
+      <table class="compare">
+        <thead>
+          <tr><th scope="col">Característica</th><th scope="col">Community</th><th scope="col" class="col-pro">Pro</th><th scope="col">Enterprise</th></tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="4">Detección y respuesta</td></tr>
+          <tr><td>Motor IDS/IPS en streaming</td><td class="yes">✓</td><td class="yes col-pro">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Reglas YAML personalizadas</td><td class="yes">✓</td><td class="yes col-pro">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Bloqueo automático (iptables)</td><td class="yes">✓</td><td class="yes col-pro">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Correlación IP / sesión / tiempo</td><td class="yes">✓</td><td class="yes col-pro">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Correlación avanzada multi-fuente</td><td class="no">—</td><td class="no col-pro">—</td><td class="yes">✓</td></tr>
+          <tr><td>Hosts monitorizados</td><td class="val">1</td><td class="val col-pro">por licencia</td><td class="val">ilimitados</td></tr>
+          <tr class="group"><td colspan="4">Integraciones</td></tr>
+          <tr><td>Threat intel (AbuseIPDB / VirusTotal)</td><td class="no">—</td><td class="yes col-pro">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Slack / Telegram / email</td><td class="no">—</td><td class="yes col-pro">✓</td><td class="yes">✓</td></tr>
+          <tr><td>API REST autenticada</td><td class="no">—</td><td class="yes col-pro">✓</td><td class="yes">✓</td></tr>
+          <tr><td>SIEM (Splunk / Elastic)</td><td class="no">—</td><td class="no col-pro">—</td><td class="yes">✓</td></tr>
+          <tr><td>SSO / LDAP</td><td class="no">—</td><td class="no col-pro">—</td><td class="yes">✓</td></tr>
+          <tr class="group"><td colspan="4">Datos y soporte</td></tr>
+          <tr><td>Retención de eventos</td><td class="val">7 días</td><td class="val col-pro">90 días</td><td class="val">a medida</td></tr>
+          <tr><td>Reportes PDF programados</td><td class="no">—</td><td class="no col-pro">—</td><td class="yes">✓</td></tr>
+          <tr><td>Soporte</td><td class="val">comunidad</td><td class="val col-pro">email &lt; 24 h</td><td class="val">SLA 24/7</td></tr>
+          <tr><td>Despliegue on-prem asistido</td><td class="no">—</td><td class="no col-pro">—</td><td class="yes">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Trust / security ===== -->
+<section class="section trust-section" data-screen-label="Seguridad y confianza">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-kicker">Confianza</p>
+      <h2>Hecho para gente que no se fía de nadie. Con razón.</h2>
+      <p>Si tu trabajo es proteger una red, no deberías tener que confiar a ciegas en tus herramientas.</p>
+    </div>
+    <div class="trust-grid">
+      <article class="trust-card reveal">
+        <span class="feature-icon"><svg width="22" height="22"><use href="#i-lock"></use></svg></span>
+        <h3>100% on-premise</h3>
+        <p>Tus logs nunca salen de tu infraestructura. PULPO funciona aislado de internet, sin nube intermedia ni dependencias externas.</p>
+      </article>
+      <article class="trust-card reveal">
+        <span class="feature-icon"><svg width="22" height="22"><use href="#i-git"></use></svg></span>
+        <h3>Código auditable, open core</h3>
+        <p>El motor de detección es open source bajo licencia MIT. Audita cada línea antes de darle acceso a tus logs.</p>
+      </article>
+      <article class="trust-card reveal">
+        <span class="feature-icon"><svg width="22" height="22"><use href="#i-eye-off"></use></svg></span>
+        <h3>Sin telemetría oculta</h3>
+        <p>Cero llamadas a casa. Las únicas conexiones salientes son las que tú configuras: threat intel y notificaciones.</p>
+      </article>
+    </div>
+    <div class="trust-terminal reveal" role="img" aria-label="Salida de terminal mostrando que PULPO no realiza conexiones salientes">
+      <div class="dash-bar">
+        <span class="dash-dots"><i></i><i></i><i></i></span>
+        <span class="dash-title">auditoría de red · soc-01</span>
+      </div>
+      <pre>$ <span class="tk-c">netstat -tupn | grep pulpo</span>
+tcp  0.0.0.0:8080   LISTEN   pulpo-dashboard   <span class="tk-d"># solo escucha en local</span>
+tcp  0.0.0.0:8443   LISTEN   pulpo-api         <span class="tk-d"># API REST, tu red</span>
+<span class="tk-g">✓ 0 conexiones salientes no configuradas</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="section" id="faq" data-screen-label="FAQ">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-kicker">FAQ</p>
+      <h2>Preguntas frecuentes</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item" data-open="false">
+        <button class="faq-q" aria-expanded="false">¿Qué diferencia a PULPO de Snort, Suricata o Wazuh?<svg class="chev" width="18" height="18"><use href="#i-chev"></use></svg></button>
+        <div class="faq-a"><div><p>Snort y Suricata inspeccionan paquetes de red; PULPO trabaja sobre <b>logs del sistema</b>, donde viven los brute-force, escaladas de privilegios y accesos anómalos. Frente a Wazuh, PULPO es un único binario sin agentes pesados ni Elastic que mantener: instalado y detectando en minutos, no en días.</p></div></div>
+      </div>
+      <div class="faq-item" data-open="false">
+        <button class="faq-q" aria-expanded="false">¿Funciona sin conexión a internet?<svg class="chev" width="18" height="18"><use href="#i-chev"></use></svg></button>
+        <div class="faq-a"><div><p>Sí. Detección, correlación, respuesta y dashboard funcionan completamente offline. Solo las integraciones opcionales (threat intel, Slack, Telegram) requieren salida a internet, y siempre las configuras tú.</p></div></div>
+      </div>
+      <div class="faq-item" data-open="false">
+        <button class="faq-q" aria-expanded="false">¿Qué sistemas operativos soporta?<svg class="chev" width="18" height="18"><use href="#i-chev"></use></svg></button>
+        <div class="faq-a"><div><p>Linux: Debian/Ubuntu, RHEL/Rocky/Alma y Arch, en x86-64 y ARM64. Se distribuye como AppImage, paquete <code>.deb</code>/<code>.rpm</code> e imagen Docker. La respuesta automática usa <code>iptables</code>/<code>nftables</code>.</p></div></div>
+      </div>
+      <div class="faq-item" data-open="false">
+        <button class="faq-q" aria-expanded="false">¿Puedo escribir mis propias reglas?<svg class="chev" width="18" height="18"><use href="#i-chev"></use></svg></button>
+        <div class="faq-a"><div><p>Sí, en todos los planes — incluido Community. Las reglas son ficheros <code>YAML</code> con patrón (regex), umbral, ventana temporal, severidad y acción. Se recargan en caliente sin reiniciar el servicio.</p></div></div>
+      </div>
+      <div class="faq-item" data-open="false">
+        <button class="faq-q" aria-expanded="false">¿Cómo se cuenta un «host»?<svg class="chev" width="18" height="18"><use href="#i-chev"></use></svg></button>
+        <div class="faq-a"><div><p>Un host es cualquier máquina (física, VM o contenedor persistente) cuyos logs analiza PULPO. Los contenedores efímeros del mismo nodo no cuentan aparte. La licencia se ajusta mes a mes si tu número de hosts cambia.</p></div></div>
+      </div>
+      <div class="faq-item" data-open="false">
+        <button class="faq-q" aria-expanded="false">¿Hay prueba gratuita del plan Pro?<svg class="chev" width="18" height="18"><use href="#i-chev"></use></svg></button>
+        <div class="faq-a"><div><p>Sí: 14 días con todas las funciones Pro, sin tarjeta de crédito. Al terminar, puedes pasar a pago o seguir en Community sin perder tus datos ni tu configuración.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Final CTA ===== -->
+<section class="final-cta" data-screen-label="CTA final">
+  <div class="container">
+    <span class="final-logo"><svg width="56" height="56" style="color:var(--accent)"><use href="#i-logo"></use></svg></span>
+    <h2>Despliega PULPO en tu red en menos de 5 minutos</h2>
+    <p>Ocho tentáculos vigilando tu red. Cero puntos ciegos.</p>
+    <div class="hero-ctas">
+      <button class="btn btn-primary btn-lg" data-action="download" data-plan="community">Descargar PULPO</button>
+      <a class="btn btn-outline btn-lg" href="#faq">Leer la documentación</a>
+    </div>
+    <span class="cmd">$ <b>curl -sSL get.pulpo.sh | bash</b></span>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="footer" data-screen-label="Footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="#" aria-label="PULPO — inicio">
+          <svg width="28" height="28" style="color:var(--accent)"><use href="#i-logo"></use></svg>
+          <span>PULPO</span>
+        </a>
+        <p>Detección y prevención de intrusiones en tiempo real, 100% dentro de tu red.</p>
+      </div>
+      <nav aria-label="Producto">
+        <h4>Producto</h4>
+        <ul>
+          <li><a href="#caracteristicas">Características</a></li>
+          <li><a href="#precios">Precios</a></li>
+          <li><a href="#">Changelog</a></li>
+          <li><a href="#">Roadmap</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Recursos">
+        <h4>Recursos</h4>
+        <ul>
+          <li><a href="#">Documentación</a></li>
+          <li><a href="#">Guía de reglas YAML</a></li>
+          <li><a href="#">Referencia API</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Empresa">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#">Sobre PULPO</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contacto</a></li>
+          <li><a href="#">Seguridad</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Legal">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacidad</a></li>
+          <li><a href="#">Términos</a></li>
+          <li><a href="#">Licencias</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 PULPO Security · Hecho con 🐙 para la comunidad de seguridad</span>
+      <a href="https://github.com/1van106/PULPO__IDS-IPS" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;color:var(--text-2)"><svg width="18" height="18"><use href="#i-github"></use></svg>github.com/pulpo-ids</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== Contact sales modal (Enterprise) ===== -->
+<div class="modal-overlay" id="contactModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+    <button class="modal-x" id="contactClose" aria-label="Cerrar">✕</button>
+    <h3 id="contactTitle">Hablemos de Enterprise</h3>
+    <p class="modal-sub">Cuéntanos sobre tu infraestructura y te preparamos una propuesta a medida. Respondemos en menos de 24&nbsp;h laborables.</p>
+    <form id="contactForm" novalidate>
+      <div class="field-row">
+        <label>Nombre<input name="name" type="text" required autocomplete="name" placeholder="Tu nombre"></label>
+        <label>Email corporativo<input name="email" type="email" required autocomplete="email" placeholder="tu@empresa.com"></label>
+      </div>
+      <div class="field-row">
+        <label>Empresa<input name="company" type="text" autocomplete="organization" placeholder="Empresa S.L."></label>
+        <label>Hosts a monitorizar<input name="hosts" type="number" min="1" placeholder="p. ej. 40"></label>
+      </div>
+      <label>¿Qué necesitas?<textarea name="message" rows="3" placeholder="Integración SIEM, número de sedes, requisitos de cumplimiento…"></textarea></label>
+      <button type="submit" class="btn btn-primary btn-block" id="contactSubmit">Enviar solicitud</button>
+      <p class="form-msg" id="contactMsg" role="status"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ===== Toast ===== -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="pulpo-app.js"></script>
+<script src="pulpo-store.js"></script>
+</body>
+</html>

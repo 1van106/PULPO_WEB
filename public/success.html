@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PULPO — Suscripción confirmada</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pulpo.css">
+<style>
+  .ok-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .ok-card {
+    width: 100%; max-width: 560px; text-align: center;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 44px 38px;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.55), 0 0 calc(60px * var(--glow)) rgba(0,212,255,calc(0.12 * var(--glow)));
+  }
+  .ok-badge {
+    width: 64px; height: 64px; margin: 0 auto 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(63,185,80,0.12); border: 1px solid rgba(63,185,80,0.4); color: var(--ok);
+  }
+  .ok-card h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px; }
+  .ok-card p.sub { color: var(--text-2); font-size: 15px; margin-bottom: 28px; text-wrap: pretty; }
+  .lic-label {
+    font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; display: block; text-align: left;
+  }
+  .lic-box {
+    display: flex; align-items: stretch; gap: 8px; margin-bottom: 6px;
+  }
+  .lic-key {
+    flex: 1; font-family: var(--mono); font-size: 12.5px; color: var(--accent);
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; text-align: left; word-break: break-all; line-height: 1.5;
+  }
+  .lic-copy {
+    flex-shrink: 0; padding: 0 16px; border-radius: 8px; border: 1px solid var(--border);
+    background: transparent; color: var(--text); font-family: var(--sans); font-size: 13px;
+    font-weight: 600; cursor: pointer; transition: border-color 0.15s, color 0.15s;
+  }
+  .lic-copy:hover { border-color: var(--accent); color: var(--accent); }
+  .lic-meta {
+    font-family: var(--mono); font-size: 11.5px; color: var(--text-3);
+    margin: 0 0 26px; text-align: left;
+  }
+  .ok-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .next {
+    text-align: left; margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--border-subtle);
+  }
+  .next h4 {
+    font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--text-3); margin-bottom: 12px;
+  }
+  .next pre {
+    font-family: var(--mono); font-size: 12px; color: var(--text-2);
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 16px; overflow-x: auto; line-height: 1.7; margin: 0;
+  }
+  .next pre .c { color: var(--accent); }
+  .state-msg { color: var(--text-2); font-size: 14px; }
+  .state-msg.err { color: var(--crit); }
+</style>
+</head>
+<body>
+<div class="ok-wrap">
+  <div class="ok-card" id="card">
+    <div class="state-msg" id="loading">Confirmando tu suscripción…</div>
+  </div>
+</div>
+
+<template id="tpl-ok">
+  <div class="ok-badge">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5 L9.5 17.5 L19.5 7"/></svg>
+  </div>
+  <h1>¡Bienvenido a PULPO <span data-plan></span>!</h1>
+  <p class="sub">Tu suscripción está activa. Esta es tu clave de licencia — guárdala: actívala en el agente para desbloquear todas las funciones de tu plan.</p>
+  <span class="lic-label">Clave de licencia</span>
+  <div class="lic-box">
+    <code class="lic-key" id="licKey"></code>
+    <button class="lic-copy" id="copyBtn">Copiar</button>
+  </div>
+  <p class="lic-meta" id="licMeta"></p>
+  <div class="ok-actions">
+    <button class="btn btn-primary" data-action="download" data-plan="pro" id="dlBtn">Descargar PULPO</button>
+    <a class="btn btn-outline" href="/">Volver al inicio</a>
+  </div>
+  <div class="next">
+    <h4>Activar la licencia</h4>
+    <pre><span class="c">$</span> pulpo license activate <span id="cliKey">&lt;tu-clave&gt;</span>
+<span class="c">$</span> sudo systemctl restart pulpo</pre>
+  </div>
+</template>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="pulpo-store.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var ref = params.get("order") || params.get("session_id");
+  var card = document.getElementById("card");
+  var loading = document.getElementById("loading");
+
+  function fail(msg) {
+    loading.className = "state-msg err";
+    loading.textContent = msg || "No hemos podido confirmar el pago. Si se te cobró, contacta con soporte.";
+  }
+
+  if (!ref) { fail("Falta la referencia del pedido."); return; }
+
+  var tries = 0;
+  function poll() {
+    fetch("/api/order/" + encodeURIComponent(ref))
+      .then(function (r) { return r.json().then(function (b) { return { ok: r.ok, body: b }; }); })
+      .then(function (res) {
+        var o = res.body;
+        if (res.ok && o && o.status === "paid" && o.license) { render(o); return; }
+        if (res.ok && o && o.status === "pending" && tries < 8) { tries++; setTimeout(poll, 1500); return; }
+        fail(o && o.error ? o.error : "El pago aún no se ha confirmado.");
+      })
+      .catch(function () { if (tries < 8) { tries++; setTimeout(poll, 1500); } else fail(); });
+  }
+
+  function render(o) {
+    var tpl = document.getElementById("tpl-ok").content.cloneNode(true);
+    tpl.querySelector("[data-plan]").textContent = (o.plan || "").charAt(0).toUpperCase() + (o.plan || "").slice(1);
+    tpl.getElementById("licKey").textContent = o.license;
+    tpl.getElementById("cliKey").textContent = o.license;
+    var meta = [];
+    if (o.hosts) meta.push(o.hosts + " host" + (o.hosts > 1 ? "s" : ""));
+    if (o.billing) meta.push("facturación " + (o.billing === "annual" ? "anual" : "mensual"));
+    if (o.expires_at) meta.push("válida hasta " + new Date(o.expires_at).toLocaleDateString("es-ES"));
+    tpl.getElementById("licMeta").textContent = meta.join(" · ");
+    tpl.getElementById("dlBtn").setAttribute("data-plan", o.plan || "pro");
+    card.innerHTML = "";
+    card.appendChild(tpl);
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      navigator.clipboard.writeText(o.license).then(function () {
+        var b = document.getElementById("copyBtn");
+        b.textContent = "¡Copiado!";
+        setTimeout(function () { b.textContent = "Copiar"; }, 1800);
+      });
+    });
+  }
+
+  poll();
+})();
+</script>
+</body>
+</html>
