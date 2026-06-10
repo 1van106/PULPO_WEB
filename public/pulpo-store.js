@@ -108,7 +108,7 @@
   function openDemo() {
     if (!lightbox) return;
     demoFocus = document.activeElement;
-    if (demoFrame && !demoFrame.src) demoFrame.src = "demo.html"; // carga perezosa
+    if (demoFrame) demoFrame.src = "demo.html"; // siempre una demo fresca
     lightbox.classList.add("open");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
@@ -120,7 +120,7 @@
     lightbox.classList.remove("open");
     lightbox.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
-    if (demoFrame) demoFrame.src = ""; // descarga el iframe y detiene el streaming
+    if (demoFrame) demoFrame.src = "about:blank"; // descarga el iframe y detiene el streaming
     document.removeEventListener("keydown", onDemoEsc);
     if (demoFocus) demoFocus.focus();
   }
