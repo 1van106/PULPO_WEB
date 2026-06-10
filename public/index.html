@@ -4,12 +4,79 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PULPO — IDS/IPS Monitor · Detección de intrusiones en tiempo real</title>
-<meta name="description" content="PULPO analiza tus logs en streaming, correlaciona eventos y bloquea intrusiones automáticamente. 100% on-premise.">
+<meta name="description" content="PULPO analiza tus logs en streaming, correlaciona eventos por IP y sesión y bloquea intrusiones automáticamente. IDS/IPS on-premise para Linux, sin la complejidad de un SIEM.">
+<meta name="author" content="Iván Batista">
+<meta name="theme-color" content="#0d1117">
+<meta name="robots" content="index,follow,max-image-preview:large">
+
+<!-- DOMINIO: reemplaza https://pulpo.example por tu dominio real (mismo token en index.html, robots.txt y sitemap.xml) -->
+<link rel="canonical" href="https://pulpo.example/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PULPO">
+<meta property="og:locale" content="es_ES">
+<meta property="og:title" content="PULPO — IDS/IPS Monitor · Detección de intrusiones en tiempo real">
+<meta property="og:description" content="Analiza tus logs en streaming, correlaciona eventos y bloquea intrusiones automáticamente. IDS/IPS on-premise para Linux, sin la complejidad de un SIEM.">
+<meta property="og:url" content="https://pulpo.example/">
+<meta property="og:image" content="https://pulpo.example/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="PULPO — IDS/IPS Monitor para Linux">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PULPO — IDS/IPS Monitor">
+<meta name="twitter:description" content="Detección de intrusiones en tiempo real, on-premise, sin la complejidad de un SIEM.">
+<meta name="twitter:image" content="https://pulpo.example/og-cover.png">
+
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="pulpo.css">
+
+<!-- Datos estructurados -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "PULPO",
+      "applicationCategory": "SecurityApplication",
+      "applicationSubCategory": "IDS/IPS",
+      "operatingSystem": "Linux",
+      "softwareVersion": "2.4",
+      "description": "IDS/IPS on-premise que analiza logs en streaming, correlaciona eventos por IP y sesión y bloquea intrusiones automáticamente, sin la complejidad de un SIEM.",
+      "url": "https://pulpo.example/",
+      "image": "https://pulpo.example/og-cover.png",
+      "author": { "@type": "Person", "name": "Iván Batista" },
+      "offers": [
+        { "@type": "Offer", "name": "Community", "price": "0", "priceCurrency": "EUR", "description": "Open source, autoalojado." },
+        { "@type": "Offer", "name": "Pro", "price": "19", "priceCurrency": "EUR", "description": "Por host y mes. Prueba de 14 días sin tarjeta." }
+      ]
+    },
+    {
+      "@type": "Organization",
+      "name": "PULPO Security",
+      "url": "https://pulpo.example/",
+      "logo": "https://pulpo.example/og-cover.png"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "¿Qué diferencia a PULPO de Snort, Suricata o Wazuh?", "acceptedAnswer": { "@type": "Answer", "text": "Snort y Suricata inspeccionan paquetes de red; PULPO trabaja sobre logs del sistema, donde viven los brute-force, escaladas de privilegios y accesos anómalos. Frente a Wazuh, PULPO es un único binario sin agentes pesados ni Elastic que mantener: instalado y detectando en minutos, no en días." } },
+        { "@type": "Question", "name": "¿Funciona sin conexión a internet?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Detección, correlación, respuesta y dashboard funcionan completamente offline. Solo las integraciones opcionales (threat intel, Slack, Telegram) requieren salida a internet, y siempre las configuras tú." } },
+        { "@type": "Question", "name": "¿Qué sistemas operativos soporta?", "acceptedAnswer": { "@type": "Answer", "text": "Linux: Debian/Ubuntu, RHEL/Rocky/Alma y Arch, en x86-64 y ARM64. Se distribuye como AppImage, paquete .deb/.rpm e imagen Docker. La respuesta automática usa iptables/nftables." } },
+        { "@type": "Question", "name": "¿Puedo escribir mis propias reglas?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, en todos los planes — incluido Community. Las reglas son ficheros YAML con patrón (regex), umbral, ventana temporal, severidad y acción. Se recargan en caliente sin reiniciar el servicio." } },
+        { "@type": "Question", "name": "¿Cómo se cuenta un «host»?", "acceptedAnswer": { "@type": "Answer", "text": "Un host es cualquier máquina (física, VM o contenedor persistente) cuyos logs analiza PULPO. Los contenedores efímeros del mismo nodo no cuentan aparte. La licencia se ajusta mes a mes si tu número de hosts cambia." } },
+        { "@type": "Question", "name": "¿Hay prueba gratuita del plan Pro?", "acceptedAnswer": { "@type": "Answer", "text": "Sí: 14 días con todas las funciones Pro, sin tarjeta de crédito. Al terminar, puedes pasar a pago o seguir en Community sin perder tus datos ni tu configuración." } }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -177,7 +244,7 @@
         <span class="dash-title">PULPO · IDS Monitor — /opt/LogClassifier/alertas.log</span>
         <span class="badge-stream"><span class="pulse-dot"></span>STREAMING</span>
       </div>
-      <img class="dash-img" src="dashboard.png" width="1903" height="881" data-action="demo"
+      <img class="dash-img" src="dashboard.png" width="1903" height="881" data-action="demo" fetchpriority="high"
            alt="Dashboard de PULPO en vivo: pipeline de detección, resumen de actividad, análisis de severidad, top reglas y eventos en tiempo real" />
       <figcaption class="dash-cap">Dashboard real de PULPO — pulsa para ampliar</figcaption>
     </figure>
