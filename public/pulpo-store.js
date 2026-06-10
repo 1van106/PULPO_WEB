@@ -99,16 +99,19 @@
   if (modalClose) modalClose.addEventListener("click", closeModal);
   if (modal) modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
 
-  /* ---------- Lightbox: demo del dashboard ---------- */
+  /* ---------- Lightbox: demo interactiva del dashboard ---------- */
   var lightbox = document.getElementById("demoLightbox");
   var demoClose = document.getElementById("demoClose");
+  var demoFrame = document.getElementById("demoFrame");
   var demoFocus = null;
   function onDemoEsc(e) { if (e.key === "Escape") closeDemo(); }
   function openDemo() {
     if (!lightbox) return;
     demoFocus = document.activeElement;
+    if (demoFrame && !demoFrame.src) demoFrame.src = "demo.html"; // carga perezosa
     lightbox.classList.add("open");
     lightbox.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
     if (demoClose) demoClose.focus();
     document.addEventListener("keydown", onDemoEsc);
   }
@@ -116,6 +119,8 @@
     if (!lightbox) return;
     lightbox.classList.remove("open");
     lightbox.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    if (demoFrame) demoFrame.src = ""; // descarga el iframe y detiene el streaming
     document.removeEventListener("keydown", onDemoEsc);
     if (demoFocus) demoFocus.focus();
   }

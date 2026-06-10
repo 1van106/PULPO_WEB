@@ -525,16 +525,15 @@ tcp  0.0.0.0:8443   LISTEN   pulpo-api         <span class="tk-d"># API REST, tu
   </div>
 </div>
 
-<!-- ===== Lightbox: demo del dashboard ===== -->
+<!-- ===== Lightbox: demo interactiva del dashboard ===== -->
 <div class="modal-overlay lightbox" id="demoLightbox" aria-hidden="true">
-  <div class="lightbox-frame" role="dialog" aria-modal="true" aria-label="Demo del dashboard de PULPO">
-    <button class="modal-x" id="demoClose" aria-label="Cerrar">✕</button>
-    <div class="dash-bar">
-      <span class="dash-dots"><i></i><i></i><i></i></span>
-      <span class="dash-title">PULPO · IDS Monitor — /opt/LogClassifier/alertas.log</span>
-      <span class="badge-stream"><span class="pulse-dot"></span>STREAMING</span>
+  <div class="lightbox-frame" role="dialog" aria-modal="true" aria-label="Demo interactiva del dashboard de PULPO">
+    <div class="lightbox-bar">
+      <span class="lightbox-title"><span class="pulse-dot"></span> Demo en vivo — datos simulados</span>
+      <a class="lightbox-link" id="demoNewTab" href="demo.html" target="_blank" rel="noopener">Abrir en pestaña ↗</a>
+      <button class="modal-x" id="demoClose" aria-label="Cerrar">✕</button>
     </div>
-    <img src="dashboard.png" width="1903" height="881" alt="Dashboard de PULPO a tamaño completo" />
+    <iframe class="lightbox-iframe" id="demoFrame" title="Demo del dashboard de PULPO" loading="lazy"></iframe>
   </div>
 </div>
 

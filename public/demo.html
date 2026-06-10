@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>PULPO · Demo del dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- ── Header ───────────────────────────────── -->
+    <header class="header">
+      <div class="header-left">
+        <div class="hdr-mark"><img class="hdr-logo" src="favicon.svg" alt="PULPO"></div>
+        <div class="header-titles">
+          <span class="header-title">PULPO</span>
+          <span class="header-sub">IDS Monitor</span>
+        </div>
+      </div>
+      <div class="header-center">
+        <div class="monitor-pill">
+          <span class="pulse-dot" style="background:var(--green);--ring-color:rgba(63,185,80,0.6)"></span>
+          <span class="status-label">MONITORIZANDO</span>
+          <span class="status-path">/opt/LogClassifier/alertas.log</span>
+        </div>
+      </div>
+      <div class="header-right" style="display:flex;gap:10px">
+        <button class="btn btn-ghost btn-danger" id="btnClear" title="Limpiar historial de alertas">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          Limpiar historial
+        </button>
+        <button class="btn btn-ghost" id="btnSwap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13l-3-3"/><path d="M21 17H8l3 3"/></svg>
+          Cambiar fichero
+        </button>
+      </div>
+    </header>
+
+    <!-- ── Aviso de demo ────────────────────────── -->
+    <div class="demo-ribbon">
+      <b>DEMO INTERACTIVA</b><span class="sep">·</span>
+      <span>datos simulados en streaming &mdash; los filtros, las gráficas y la exportación CSV funcionan de verdad</span>
+    </div>
+
+    <!-- ── Cuerpo ───────────────────────────────── -->
+    <div class="dashboard-body">
+
+      <!-- Pipeline -->
+      <section>
+        <div class="sec-head"><h2>Pipeline de detección</h2><div class="line"></div></div>
+        <div class="pipeline-stages" id="pipeline">
+          <div class="pipeline-item"><div class="pipeline-stage" data-stage="ingesta"><div class="stage-top"><span class="stage-num">01</span><span class="stage-label">Ingesta</span></div></div><div class="pipeline-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="M13 6l6 6-6 6"/></svg></div></div>
+          <div class="pipeline-item"><div class="pipeline-stage" data-stage="motor"><div class="stage-top"><span class="stage-num">02</span><span class="stage-label">Motor Reglas</span></div></div><div class="pipeline-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="M13 6l6 6-6 6"/></svg></div></div>
+          <div class="pipeline-item"><div class="pipeline-stage" data-stage="correlacion"><div class="stage-top"><span class="stage-num">03</span><span class="stage-label">Correlación</span></div></div><div class="pipeline-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="M13 6l6 6-6 6"/></svg></div></div>
+          <div class="pipeline-item"><div class="pipeline-stage" data-stage="respuesta"><div class="stage-top"><span class="stage-num">04</span><span class="stage-label">Respuesta</span></div></div><div class="pipeline-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="M13 6l6 6-6 6"/></svg></div></div>
+          <div class="pipeline-item"><div class="pipeline-stage" data-stage="alertas"><div class="stage-top"><span class="stage-num">05</span><span class="stage-label">Alertas</span></div></div></div>
+        </div>
+      </section>
+
+      <!-- Resumen -->
+      <section>
+        <div class="sec-head"><h2>Resumen de actividad</h2><div class="line"></div></div>
+        <div class="stats-row" id="stats"></div>
+      </section>
+
+      <!-- Análisis -->
+      <section>
+        <div class="sec-head"><h2>Análisis</h2><div class="line"></div></div>
+        <div class="charts-row">
+          <div class="chart-panel">
+            <div class="chart-panel-head"><span class="chart-panel-title">Actividad — últimos 30 min</span></div>
+            <div class="chart-body" id="chartTimeline"></div>
+          </div>
+          <div class="chart-panel">
+            <div class="chart-panel-head"><span class="chart-panel-title">Severidad</span></div>
+            <div class="chart-body chart-body--donut" id="chartDonut"></div>
+          </div>
+          <div class="chart-panel">
+            <div class="chart-panel-head"><span class="chart-panel-title">Top reglas</span></div>
+            <div class="chart-body chart-body--rules" id="chartRules"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feed + IPs -->
+      <div class="dashboard-main">
+        <div class="panel alert-feed demo-events">
+          <div class="panel-head">
+            <h3>Eventos en tiempo real</h3>
+            <span class="panel-count" id="feedCount">0</span>
+            <div class="panel-spacer"></div>
+            <button class="btn btn-ghost fb-toggle" id="btnFilters" style="padding:5px 10px;font-size:12px;gap:6px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="6" x2="8" y2="3"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="16" y1="12" x2="16" y2="9"/><line x1="4" y1="18" x2="16" y2="18"/><line x1="10" y1="18" x2="10" y2="15"/></svg>
+              Filtros<span class="fb-count" id="fbCount" hidden>0</span>
+            </button>
+            <button class="btn btn-ghost" id="btnCsv" style="padding:5px 10px;font-size:12px;gap:6px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              CSV
+            </button>
+            <div class="live-tag"><span class="pulse-dot" style="background:var(--green);--ring-color:rgba(63,185,80,0.6)"></span>STREAMING</div>
+          </div>
+
+          <div class="filterbar" id="filterbar" hidden>
+            <div class="filter-field">
+              <span class="field-label">Tipo</span>
+              <div class="segment" role="group" aria-label="Tipo" data-seg="tipo">
+                <button type="button" class="seg-btn is-all" data-val="ALL" aria-pressed="true">TODOS</button>
+                <button type="button" class="seg-btn t-bloqueo" data-val="BLOQUEO" aria-pressed="false"><span class="mk"></span>BLOQUEO</button>
+                <button type="button" class="seg-btn t-alerta" data-val="ALERTA" aria-pressed="false"><span class="mk"></span>ALERTA</button>
+              </div>
+            </div>
+            <div class="filter-field">
+              <span class="field-label">Severidad</span>
+              <div class="segment" role="group" aria-label="Severidad" data-seg="sev">
+                <button type="button" class="seg-btn is-all" data-val="ALL" aria-pressed="true">TODAS</button>
+                <button type="button" class="seg-btn s-critica" data-val="CRITICA" aria-pressed="false"><span class="mk"></span>CRÍTICA</button>
+                <button type="button" class="seg-btn s-alta" data-val="ALTA" aria-pressed="false"><span class="mk"></span>ALTA</button>
+                <button type="button" class="seg-btn s-media" data-val="MEDIA" aria-pressed="false"><span class="mk"></span>MEDIA</button>
+                <button type="button" class="seg-btn s-baja" data-val="BAJA" aria-pressed="false"><span class="mk"></span>BAJA</button>
+              </div>
+            </div>
+            <div class="filter-field">
+              <span class="field-label">Buscar</span>
+              <div class="fb-search-wrap">
+                <input type="text" class="fb-search" id="fbSearch" placeholder="regla o IP…" spellcheck="false" autocomplete="off">
+                <button type="button" class="fb-search-x" id="fbSearchX" hidden>✕</button>
+              </div>
+            </div>
+            <div class="fb-spacer"></div>
+            <span class="fb-result"><b id="fbVisible">0</b> / <span id="fbTotal">0</span> eventos</span>
+            <button type="button" class="fb-clear" id="fbClear" disabled>✕ Limpiar</button>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="alert-table">
+              <thead><tr>
+                <th style="width:160px">Timestamp</th>
+                <th style="width:110px">Tipo</th>
+                <th>Regla</th>
+                <th style="width:150px">IP origen</th>
+                <th style="width:100px">Severidad</th>
+                <th style="width:90px;text-align:right">Duración</th>
+              </tr></thead>
+              <tbody id="feedBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel blocked-ips">
+          <div class="panel-head"><h3>IPs bloqueadas</h3><span class="panel-count" id="ipCount">0</span></div>
+          <div id="ipPanel"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-toast" id="demoToast" role="status" aria-live="polite"></div>
+  <script src="demo.js"></script>
+</body>
+</html>
