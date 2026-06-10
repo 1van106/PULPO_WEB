@@ -1,12 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="#00d4ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-  <rect width="32" height="32" rx="7" fill="#0d1117" stroke="none"/>
-  <path d="M16 2.5 L26.5 6.2 V14.5 C26.5 21.5 22.3 26.8 16 29.5 C9.7 26.8 5.5 21.5 5.5 14.5 V6.2 Z"/>
-  <path d="M11.5 14.5 a4.5 4.5 0 0 1 9 0 v0.8"/>
-  <path d="M11.5 15.3 q-0.4 2.2 -2.6 3.2"/>
-  <path d="M13.8 16.8 q-0.3 2.6 -2 4"/>
-  <path d="M18.2 16.8 q0.3 2.6 2 4"/>
-  <path d="M20.5 15.3 q0.4 2.2 2.6 3.2"/>
-  <path d="M16 17.2 v2.4 q0 1.6 -1.4 2.2"/>
-  <circle cx="14.2" cy="13.4" r="0.5" fill="#00d4ff" stroke="none"/>
-  <circle cx="17.8" cy="13.4" r="0.5" fill="#00d4ff" stroke="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="49 62 414 414" width="64" height="64">
+  <defs>
+    <filter id="g" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <radialGradient id="sf" cx="50%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#0d3a4c"/>
+      <stop offset="55%" stop-color="#0a2734"/>
+      <stop offset="100%" stop-color="#08151c"/>
+    </radialGradient>
+    <radialGradient id="hf" cx="50%" cy="36%" r="66%">
+      <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0.02"/>
+    </radialGradient>
+    <path id="hp" d="M198,234 C172,200 176,150 212,130 C234,118 278,118 300,130 C336,150 340,200 314,234 C298,252 214,252 198,234 Z"/>
+    <path id="sp" d="M118,86 L394,86 Q428,86 428,120 L428,250 C428,338 360,410 256,452 C152,410 84,338 84,250 L84,120 Q84,86 118,86 Z"/>
+  </defs>
+  <rect x="49" y="62" width="414" height="414" rx="92" fill="#0d1117"/>
+  <use href="#sp" fill="url(#sf)"/>
+  <use href="#sp" fill="none" stroke="#00d4ff" stroke-width="6" stroke-linejoin="round" filter="url(#g)"/>
+  <g transform="translate(0,-4) translate(256,261) scale(0.66) translate(-256,-261)">
+    <g fill="none" stroke="#00d4ff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" filter="url(#g)">
+      <path d="M246,248 C240,310 236,360 224,418"/>
+      <path d="M228,246 C206,300 196,356 168,398"/>
+      <path d="M212,240 C176,278 150,330 120,362"/>
+      <path d="M198,232 C156,256 110,282 84,312"/>
+      <path d="M266,248 C272,310 276,360 288,418"/>
+      <path d="M284,246 C306,300 316,356 344,398"/>
+      <path d="M300,240 C336,278 362,330 392,362"/>
+      <path d="M314,232 C356,256 402,282 428,312"/>
+      <use href="#hp" fill="url(#hf)"/>
+      <polygon points="219,182 233,182 240,194 233,206 219,206 212,194"/>
+      <polygon points="279,182 293,182 300,194 293,206 279,206 272,194"/>
+    </g>
+    <g fill="#7fe9ff" filter="url(#g)">
+      <circle cx="224" cy="418" r="6"/><circle cx="168" cy="398" r="6"/>
+      <circle cx="120" cy="362" r="6"/><circle cx="84" cy="312" r="6"/>
+      <circle cx="288" cy="418" r="6"/><circle cx="344" cy="398" r="6"/>
+      <circle cx="392" cy="362" r="6"/><circle cx="428" cy="312" r="6"/>
+      <circle cx="226" cy="194" r="4"/><circle cx="286" cy="194" r="4"/>
+    </g>
+  </g>
 </svg>
