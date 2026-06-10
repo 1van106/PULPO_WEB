@@ -170,75 +170,15 @@
       <p class="hero-note">$ curl -sSL get.pulpo.sh | bash — desplegado en &lt; 5 min</p>
     </div>
 
-    <!-- Dashboard mockup -->
-    <div class="dash" role="img" aria-label="Captura del dashboard de PULPO mostrando eventos en tiempo real">
+    <!-- Dashboard real (captura del producto) -->
+    <div class="dash dash-shot">
       <div class="dash-bar">
         <span class="dash-dots"><i></i><i></i><i></i></span>
-        <span class="dash-title">pulpo://soc-01 · dashboard</span>
+        <span class="dash-title">PULPO · IDS Monitor</span>
         <span class="badge-stream"><span class="pulse-dot"></span>STREAMING</span>
       </div>
-      <div class="dash-body">
-        <div class="dash-panel dash-chart">
-          <h4>Actividad · últimos 30 min</h4>
-          <svg viewBox="0 0 320 104" preserveAspectRatio="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#58a6ff" stop-opacity="0.28"></stop>
-                <stop offset="100%" stop-color="#58a6ff" stop-opacity="0"></stop>
-              </linearGradient>
-            </defs>
-            <path d="M0 86 L20 82 L40 88 L60 72 L80 78 L100 60 L120 68 L140 46 L160 56 L180 34 L200 48 L220 30 L240 44 L260 24 L280 40 L300 20 L320 32 L320 104 L0 104 Z" fill="url(#areaFill)"></path>
-            <path d="M0 86 L20 82 L40 88 L60 72 L80 78 L100 60 L120 68 L140 46 L160 56 L180 34 L200 48 L220 30 L240 44 L260 24 L280 40 L300 20 L320 32" fill="none" stroke="#58a6ff" stroke-width="1.6"></path>
-            <circle cx="320" cy="32" r="3" fill="#58a6ff"></circle>
-          </svg>
-        </div>
-        <div class="dash-side">
-          <div class="dash-panel">
-            <h4>Severidad</h4>
-            <div class="donut-wrap">
-              <span class="donut">
-                <svg width="58" height="58" viewBox="0 0 42 42" aria-hidden="true">
-                  <circle cx="21" cy="21" r="15.9" fill="none" stroke="#21262d" stroke-width="5.5"></circle>
-                  <circle cx="21" cy="21" r="15.9" fill="none" stroke="#f85149" stroke-width="5.5" stroke-dasharray="14 86" stroke-dashoffset="0"></circle>
-                  <circle cx="21" cy="21" r="15.9" fill="none" stroke="#d29922" stroke-width="5.5" stroke-dasharray="22 78" stroke-dashoffset="-14"></circle>
-                  <circle cx="21" cy="21" r="15.9" fill="none" stroke="#58a6ff" stroke-width="5.5" stroke-dasharray="31 69" stroke-dashoffset="-36"></circle>
-                  <circle cx="21" cy="21" r="15.9" fill="none" stroke="#6e7681" stroke-width="5.5" stroke-dasharray="33 67" stroke-dashoffset="-67"></circle>
-                </svg>
-                <span class="donut-center"><b>312</b><i>total</i></span>
-              </span>
-              <div class="donut-legend">
-                <span><i style="background:var(--crit)"></i>Crítica<b>43</b></span>
-                <span><i style="background:var(--high)"></i>Alta<b>69</b></span>
-                <span><i style="background:var(--med)"></i>Media<b>97</b></span>
-                <span><i style="background:#6e7681"></i>Baja<b>103</b></span>
-              </div>
-            </div>
-          </div>
-          <div class="dash-panel">
-            <h4>Top reglas</h4>
-            <div class="mk-rules">
-              <div class="mk-rule"><span class="nm">Fuerza bruta SSH</span><span class="track"><i style="width:100%"></i></span><b>88</b></div>
-              <div class="mk-rule"><span class="nm">Escaneo web automatizado</span><span class="track"><i style="width:71%"></i></span><b>62</b></div>
-              <div class="mk-rule"><span class="nm">Usuario inválido SSH</span><span class="track"><i style="width:53%"></i></span><b>47</b></div>
-              <div class="mk-rule"><span class="nm">Inyección SQL</span><span class="track"><i style="width:34%"></i></span><b>30</b></div>
-              <div class="mk-rule"><span class="nm">Path Traversal</span><span class="track"><i style="width:22%"></i></span><b>19</b></div>
-            </div>
-          </div>
-        </div>
-        <div class="dash-panel dash-table">
-          <h4>Eventos en tiempo real</h4>
-          <table>
-            <thead><tr><th>Timestamp</th><th>Tipo</th><th>Regla</th><th>IP origen</th><th>Sev.</th></tr></thead>
-            <tbody>
-              <tr><td>14:32:08</td><td><span class="tg tg-bloqueo"><i></i>BLOQUEO</span></td><td>Fuerza bruta SSH</td><td>203.0.113.42</td><td><span class="sev sev-crit">CRÍTICA</span></td></tr>
-              <tr><td>14:31:54</td><td><span class="tg tg-alerta"><i></i>ALERTA</span></td><td>Escaneo web automatizado</td><td>198.51.100.7</td><td><span class="sev sev-high">ALTA</span></td></tr>
-              <tr><td>14:31:12</td><td><span class="tg tg-alerta"><i></i>ALERTA</span></td><td>Inyección SQL</td><td>10.0.4.18</td><td><span class="sev sev-med">MEDIA</span></td></tr>
-              <tr><td>14:30:47</td><td><span class="tg tg-bloqueo"><i></i>BLOQUEO</span></td><td>Intento login root SSH</td><td>45.79.12.6</td><td><span class="sev sev-crit">CRÍTICA</span></td></tr>
-              <tr><td>14:30:21</td><td><span class="tg tg-baja"><i></i>baja</span></td><td>User-Agent de escáner</td><td>10.0.2.5</td><td><span class="sev sev-baja">BAJA</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <img class="dash-img" src="dashboard.png" width="1903" height="881"
+           alt="Dashboard de PULPO en vivo: pipeline de detección, resumen de actividad, análisis de severidad, top reglas y eventos en tiempo real" />
     </div>
   </div>
 </section>
