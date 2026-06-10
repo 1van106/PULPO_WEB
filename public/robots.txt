@@ -3,5 +3,4 @@ Allow: /
 Disallow: /demo
 Disallow: /success
 
-# DOMINIO: reemplaza https://pulpo.example por tu dominio real
-Sitemap: https://pulpo.example/sitemap.xml
+Sitemap: https://pulpo.ivanbatistaherrero.com/sitemap.xml
