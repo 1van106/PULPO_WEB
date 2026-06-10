@@ -99,6 +99,29 @@
   if (modalClose) modalClose.addEventListener("click", closeModal);
   if (modal) modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
 
+  /* ---------- Lightbox: demo del dashboard ---------- */
+  var lightbox = document.getElementById("demoLightbox");
+  var demoClose = document.getElementById("demoClose");
+  var demoFocus = null;
+  function onDemoEsc(e) { if (e.key === "Escape") closeDemo(); }
+  function openDemo() {
+    if (!lightbox) return;
+    demoFocus = document.activeElement;
+    lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
+    if (demoClose) demoClose.focus();
+    document.addEventListener("keydown", onDemoEsc);
+  }
+  function closeDemo() {
+    if (!lightbox) return;
+    lightbox.classList.remove("open");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.removeEventListener("keydown", onDemoEsc);
+    if (demoFocus) demoFocus.focus();
+  }
+  if (demoClose) demoClose.addEventListener("click", closeDemo);
+  if (lightbox) lightbox.addEventListener("click", function (e) { if (e.target === lightbox) closeDemo(); });
+
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -150,6 +173,7 @@
     if (action === "download") { e.preventDefault(); handleDownload(btn, plan); }
     else if (action === "checkout") { e.preventDefault(); handleCheckout(btn, plan); }
     else if (action === "contact") { e.preventDefault(); openModal(); }
+    else if (action === "demo") { e.preventDefault(); openDemo(); }
   });
 
   /* ---------- Aviso de retorno de Stripe (?status=) ---------- */

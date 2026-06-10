@@ -158,28 +158,29 @@
 
 <!-- ===== Hero ===== -->
 <section class="hero" id="producto" data-screen-label="Hero">
-  <div class="container hero-grid">
-    <div>
+  <div class="container hero-stack">
+    <div class="hero-copy">
       <span class="hero-eyebrow"><span class="pulse-dot" aria-hidden="true"></span> v2.4 · open core · Linux</span>
       <h1>Detección de intrusiones en <em>tiempo real</em>, sin la complejidad de un SIEM</h1>
       <p class="hero-sub">PULPO analiza tus logs en streaming, aplica reglas de detección, correlaciona eventos por IP y sesión, y responde automáticamente — todo desde un dashboard en vivo, dentro de tu propia red.</p>
       <div class="hero-ctas">
         <a class="btn btn-primary btn-lg" href="#precios">Empezar gratis</a>
-        <a class="btn btn-outline btn-lg" href="#producto">Ver demo en vivo</a>
+        <button type="button" class="btn btn-outline btn-lg" data-action="demo">Ver demo en vivo</button>
       </div>
       <p class="hero-note">$ curl -sSL get.pulpo.sh | bash — desplegado en &lt; 5 min</p>
     </div>
 
     <!-- Dashboard real (captura del producto) -->
-    <div class="dash dash-shot">
+    <figure class="dash dash-shot">
       <div class="dash-bar">
         <span class="dash-dots"><i></i><i></i><i></i></span>
-        <span class="dash-title">PULPO · IDS Monitor</span>
+        <span class="dash-title">PULPO · IDS Monitor — /opt/LogClassifier/alertas.log</span>
         <span class="badge-stream"><span class="pulse-dot"></span>STREAMING</span>
       </div>
-      <img class="dash-img" src="dashboard.png" width="1903" height="881"
+      <img class="dash-img" src="dashboard.png" width="1903" height="881" data-action="demo"
            alt="Dashboard de PULPO en vivo: pipeline de detección, resumen de actividad, análisis de severidad, top reglas y eventos en tiempo real" />
-    </div>
+      <figcaption class="dash-cap">Dashboard real de PULPO — pulsa para ampliar</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -521,6 +522,19 @@ tcp  0.0.0.0:8443   LISTEN   pulpo-api         <span class="tk-d"># API REST, tu
       <button type="submit" class="btn btn-primary btn-block" id="contactSubmit">Enviar solicitud</button>
       <p class="form-msg" id="contactMsg" role="status"></p>
     </form>
+  </div>
+</div>
+
+<!-- ===== Lightbox: demo del dashboard ===== -->
+<div class="modal-overlay lightbox" id="demoLightbox" aria-hidden="true">
+  <div class="lightbox-frame" role="dialog" aria-modal="true" aria-label="Demo del dashboard de PULPO">
+    <button class="modal-x" id="demoClose" aria-label="Cerrar">✕</button>
+    <div class="dash-bar">
+      <span class="dash-dots"><i></i><i></i><i></i></span>
+      <span class="dash-title">PULPO · IDS Monitor — /opt/LogClassifier/alertas.log</span>
+      <span class="badge-stream"><span class="pulse-dot"></span>STREAMING</span>
+    </div>
+    <img src="dashboard.png" width="1903" height="881" alt="Dashboard de PULPO a tamaño completo" />
   </div>
 </div>
 
