@@ -16,7 +16,6 @@
     <path id="hp" d="M198,234 C172,200 176,150 212,130 C234,118 278,118 300,130 C336,150 340,200 314,234 C298,252 214,252 198,234 Z"/>
     <path id="sp" d="M118,86 L394,86 Q428,86 428,120 L428,250 C428,338 360,410 256,452 C152,410 84,338 84,250 L84,120 Q84,86 118,86 Z"/>
   </defs>
-  <rect x="49" y="62" width="414" height="414" rx="92" fill="#0d1117"/>
   <use href="#sp" fill="url(#sf)"/>
   <use href="#sp" fill="none" stroke="#00d4ff" stroke-width="6" stroke-linejoin="round" filter="url(#g)"/>
   <g transform="translate(0,-4) translate(256,261) scale(0.66) translate(-256,-261)">
