@@ -52,12 +52,32 @@
   function rand(n) { return Math.floor(Math.random() * n); }
   function pick(a) { return a[rand(a.length)]; }
 
-  // "DE" → 🇩🇪 (ISO alpha-2 → Regional Indicator Symbols). '' si nulo/ inválido.
-  function flagEmoji(cc) {
-    if (!cc || !/^[A-Za-z]{2}$/.test(cc)) return "";
-    cc = cc.toUpperCase();
-    return String.fromCodePoint(0x1f1e6 + cc.charCodeAt(0) - 65, 0x1f1e6 + cc.charCodeAt(1) - 65);
-  }
+  // Banderas en SVG inline (Windows no renderiza los emoji de bandera → mostraría
+  // solo las 2 letras). Mismo conjunto de países que IP_INTEL.
+  var FV = ' class="flag-svg" preserveAspectRatio="none"';
+  var FLAGS = {
+    US: '<svg' + FV + ' viewBox="0 0 19 10"><rect width="19" height="10" fill="#B22234"/>' +
+        '<g fill="#fff"><rect y="0.77" width="19" height="0.77"/><rect y="2.31" width="19" height="0.77"/>' +
+        '<rect y="3.85" width="19" height="0.77"/><rect y="5.38" width="19" height="0.77"/>' +
+        '<rect y="6.92" width="19" height="0.77"/><rect y="8.46" width="19" height="0.77"/></g>' +
+        '<rect width="7.6" height="5.38" fill="#3C3B6E"/></svg>',
+    GB: '<svg' + FV + ' viewBox="0 0 60 30"><rect width="60" height="30" fill="#012169"/>' +
+        '<path d="M0 0L60 30M60 0L0 30" stroke="#fff" stroke-width="6"/>' +
+        '<path d="M0 0L60 30M60 0L0 30" stroke="#C8102E" stroke-width="3"/>' +
+        '<path d="M30 0V30M0 15H60" stroke="#fff" stroke-width="10"/>' +
+        '<path d="M30 0V30M0 15H60" stroke="#C8102E" stroke-width="6"/></svg>',
+    DE: '<svg' + FV + ' viewBox="0 0 5 3"><rect width="5" height="1" fill="#000"/>' +
+        '<rect width="5" height="1" y="1" fill="#D00"/><rect width="5" height="1" y="2" fill="#FFCE00"/></svg>',
+    NL: '<svg' + FV + ' viewBox="0 0 9 6"><rect width="9" height="2" fill="#AE1C28"/>' +
+        '<rect width="9" height="2" y="2" fill="#fff"/><rect width="9" height="2" y="4" fill="#21468B"/></svg>',
+    RU: '<svg' + FV + ' viewBox="0 0 9 6"><rect width="9" height="2" fill="#fff"/>' +
+        '<rect width="9" height="2" y="2" fill="#0039A6"/><rect width="9" height="2" y="4" fill="#D52B1E"/></svg>',
+    RO: '<svg' + FV + ' viewBox="0 0 3 2"><rect width="1" height="2" fill="#002B7F"/>' +
+        '<rect width="1" height="2" x="1" fill="#FCD116"/><rect width="1" height="2" x="2" fill="#CE1126"/></svg>',
+    SE: '<svg' + FV + ' viewBox="0 0 16 10"><rect width="16" height="10" fill="#006AA7"/>' +
+        '<rect x="5" width="2" height="10" fill="#FECC00"/><rect y="4" width="16" height="2" fill="#FECC00"/></svg>'
+  };
+  function flagSvg(cc) { return cc ? (FLAGS[cc.toUpperCase()] || "") : ""; }
   // Tramo de color del abuse_score (AbuseIPDB 0–100).
   function abuseClass(score) {
     if (score >= 75) return "b-abuse-high";
@@ -262,7 +282,8 @@
     } else {
       body.innerHTML = vis.map(function (a) {
         var tcls = a.tipo === "BLOQUEO" ? "b-bloqueo" : "b-alerta";
-        var flag = a.pais ? '<span class="ip-flag" title="' + a.pais + '">' + flagEmoji(a.pais) + "</span>" : "";
+        var fsvg = flagSvg(a.pais);
+        var flag = fsvg ? '<span class="ip-flag" title="' + a.pais + '">' + fsvg + "</span>" : "";
         return '<tr' + (a.id === freshId ? ' class="row-fresh"' : "") + ">" +
           '<td class="cell-ts">' + a.timestamp + "</td>" +
           '<td><span class="badge ' + tcls + '"><span class="dot"></span>' + a.tipo + "</span></td>" +

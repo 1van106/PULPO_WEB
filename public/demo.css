@@ -432,7 +432,11 @@ body {
 .b-baja    { --fg: var(--text-dim); --bgc: rgba(139,148,158,0.1); --bd: rgba(139,148,158,0.3); }
 
 /* ── Threat intelligence (columna Riesgo + bandera en IP) ─ */
-.ip-flag { margin-right: 6px; font-size: 13px; line-height: 1; vertical-align: -1px; }
+.ip-flag { display: inline-flex; vertical-align: middle; margin-right: 7px; }
+.ip-flag .flag-svg {
+  width: 16px; height: 11px; display: block; border-radius: 2px;
+  box-shadow: 0 0 0 0.5px rgba(255,255,255,0.18);
+}
 .cell-intel { white-space: nowrap; }
 .cell-empty { color: var(--text-faint); }
 .intel-group { display: inline-flex; align-items: center; gap: 5px; }
