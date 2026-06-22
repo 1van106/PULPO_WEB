@@ -29,15 +29,41 @@
   var RULE_BAG = [];
   RULES.forEach(function (r) { for (var i = 0; i < r.w; i++) RULE_BAG.push(r); });
 
-  var IPS = [
-    "203.0.113.42", "203.0.113.77", "198.51.100.7", "198.51.100.23",
-    "45.79.12.6", "45.137.21.90", "185.220.101.4", "185.220.101.34",
-    "192.168.56.102", "10.0.4.18", "91.219.236.18", "146.70.99.2",
-    "5.188.206.14", "194.165.16.71"
-  ];
+  /* ── IPs origen + threat intel asociado (país / AbuseIPDB / VirusTotal) ──
+     Las privadas (192.168/10.x) no se enriquecen → pais:null. */
+  var IP_INTEL = {
+    "203.0.113.42":   { pais: "US", abuse: 12,  vt: 0 },
+    "203.0.113.77":   { pais: "US", abuse: 0,   vt: 0 },
+    "198.51.100.7":   { pais: "GB", abuse: 34,  vt: 1 },
+    "198.51.100.23":  { pais: "GB", abuse: 0,   vt: 0 },
+    "45.79.12.6":     { pais: "US", abuse: 28,  vt: 2 },
+    "45.137.21.90":   { pais: "NL", abuse: 88,  vt: 5 },
+    "185.220.101.4":  { pais: "DE", abuse: 100, vt: 9 },
+    "185.220.101.34": { pais: "DE", abuse: 100, vt: 7 },
+    "192.168.56.102": { pais: null, abuse: 0,   vt: 0 },
+    "10.0.4.18":      { pais: null, abuse: 0,   vt: 0 },
+    "91.219.236.18":  { pais: "RU", abuse: 76,  vt: 4 },
+    "146.70.99.2":    { pais: "RO", abuse: 41,  vt: 1 },
+    "5.188.206.14":   { pais: "RU", abuse: 93,  vt: 6 },
+    "194.165.16.71":  { pais: "SE", abuse: 100, vt: 8 }
+  };
+  var IPS = Object.keys(IP_INTEL);
 
   function rand(n) { return Math.floor(Math.random() * n); }
   function pick(a) { return a[rand(a.length)]; }
+
+  // "DE" → 🇩🇪 (ISO alpha-2 → Regional Indicator Symbols). '' si nulo/ inválido.
+  function flagEmoji(cc) {
+    if (!cc || !/^[A-Za-z]{2}$/.test(cc)) return "";
+    cc = cc.toUpperCase();
+    return String.fromCodePoint(0x1f1e6 + cc.charCodeAt(0) - 65, 0x1f1e6 + cc.charCodeAt(1) - 65);
+  }
+  // Tramo de color del abuse_score (AbuseIPDB 0–100).
+  function abuseClass(score) {
+    if (score >= 75) return "b-abuse-high";
+    if (score >= 25) return "b-abuse-med";
+    return "b-abuse-low";
+  }
 
   function fmtTs(d) {
     function p(n) { return (n < 10 ? "0" : "") + n; }
@@ -48,15 +74,20 @@
   var uid = 1;
   function makeAlert(date) {
     var r = pick(RULE_BAG);
+    var ip = pick(IPS);
+    var intel = IP_INTEL[ip] || { pais: null, abuse: 0, vt: 0 };
     return {
       id: uid++,
       ts: date,
       timestamp: fmtTs(date),
       tipo: r.tipo,
       regla: r.regla,
-      ip: pick(IPS),
+      ip: ip,
       severidad: r.sev,
-      duracion: r.dur
+      duracion: r.dur,
+      pais: intel.pais,
+      abuse_score: intel.abuse,
+      vt_malicious: intel.vt
     };
   }
 
@@ -203,29 +234,47 @@
   }
 
   /* ── Render: tabla de eventos ────────────────────────────── */
+  // Celda "Riesgo": badge de abuse + (opcional) badge de VirusTotal, o "—".
+  function threatCell(a) {
+    var hasScore = a.abuse_score != null && a.abuse_score > 0;
+    var hasVt = a.vt_malicious != null && a.vt_malicious > 0;
+    if (!hasScore && !hasVt) return '<span class="cell-empty">—</span>';
+    var html = '<span class="intel-group">';
+    if (hasScore) {
+      html += '<span class="badge ' + abuseClass(a.abuse_score) + '" title="AbuseIPDB ' + a.abuse_score +
+        '/100"><span class="dot"></span>' + a.abuse_score + "</span>";
+    }
+    if (hasVt) {
+      html += '<span class="badge b-vt" title="VirusTotal: ' + a.vt_malicious + ' motores maliciosos">VT ' +
+        a.vt_malicious + "</span>";
+    }
+    return html + "</span>";
+  }
+
   function renderFeed(freshId) {
     var vis = visibleAlerts();
-    document.getElementById("feedCount").textContent = alerts.length;
+    document.getElementById("feedVisible").textContent = vis.length;
+    document.getElementById("feedTotal").textContent = alerts.length;
     var body = document.getElementById("feedBody");
     if (!vis.length) {
-      body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-faint);font-style:italic">' +
+      body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-faint);font-style:italic">' +
         (alerts.length ? "Sin eventos que coincidan con el filtro" : "Esperando eventos…") + "</td></tr>";
     } else {
       body.innerHTML = vis.map(function (a) {
         var tcls = a.tipo === "BLOQUEO" ? "b-bloqueo" : "b-alerta";
+        var flag = a.pais ? '<span class="ip-flag" title="' + a.pais + '">' + flagEmoji(a.pais) + "</span>" : "";
         return '<tr' + (a.id === freshId ? ' class="row-fresh"' : "") + ">" +
           '<td class="cell-ts">' + a.timestamp + "</td>" +
           '<td><span class="badge ' + tcls + '"><span class="dot"></span>' + a.tipo + "</span></td>" +
           '<td class="cell-rule">' + a.regla + "</td>" +
-          '<td class="cell-ip">' + a.ip + "</td>" +
+          '<td class="cell-ip">' + flag + a.ip + "</td>" +
+          '<td class="cell-intel">' + threatCell(a) + "</td>" +
           '<td><span class="badge ' + SEV[a.severidad].badge + '">' + a.severidad + "</span></td>" +
           '<td class="cell-dur">' + (a.duracion ? a.duracion + "s" : "—") + "</td></tr>";
       }).join("");
     }
     // Estado de la barra de filtros
     var ac = activeCount();
-    document.getElementById("fbVisible").textContent = vis.length;
-    document.getElementById("fbTotal").textContent = alerts.length;
     var fbCount = document.getElementById("fbCount");
     fbCount.textContent = ac; fbCount.hidden = ac === 0;
     document.getElementById("btnFilters").classList.toggle("fb-toggle--on", ac > 0);
@@ -304,9 +353,10 @@
   // Exportar CSV
   document.getElementById("btnCsv").addEventListener("click", function () {
     var vis = visibleAlerts();
-    var head = "timestamp,tipo,regla,ip,severidad,duracion\n";
+    var head = "timestamp,tipo,regla,ip,pais,abuse_score,vt_malicious,severidad,duracion\n";
     var rows = vis.map(function (a) {
       return '"' + a.timestamp + '","' + a.tipo + '","' + a.regla + '","' + a.ip + '","' +
+        (a.pais || "") + '","' + (a.abuse_score || "") + '","' + (a.vt_malicious || "") + '","' +
         a.severidad + '","' + (a.duracion || "") + '"';
     }).join("\n");
     var blob = new Blob([head + rows], { type: "text/csv;charset=utf-8;" });

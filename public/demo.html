@@ -92,7 +92,7 @@
         <div class="panel alert-feed demo-events">
           <div class="panel-head">
             <h3>Eventos en tiempo real</h3>
-            <span class="panel-count" id="feedCount">0</span>
+            <span class="panel-count"><b id="feedVisible">0</b> / <span id="feedTotal">0</span> eventos</span>
             <div class="panel-spacer"></div>
             <button class="btn btn-ghost fb-toggle" id="btnFilters" style="padding:5px 10px;font-size:12px;gap:6px">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="6" x2="8" y2="3"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="16" y1="12" x2="16" y2="9"/><line x1="4" y1="18" x2="16" y2="18"/><line x1="10" y1="18" x2="10" y2="15"/></svg>
@@ -124,15 +124,13 @@
                 <button type="button" class="seg-btn s-baja" data-val="BAJA" aria-pressed="false"><span class="mk"></span>BAJA</button>
               </div>
             </div>
-            <div class="filter-field">
+            <div class="filter-field fb-search-field">
               <span class="field-label">Buscar</span>
               <div class="fb-search-wrap">
                 <input type="text" class="fb-search" id="fbSearch" placeholder="regla o IP…" spellcheck="false" autocomplete="off">
                 <button type="button" class="fb-search-x" id="fbSearchX" hidden>✕</button>
               </div>
             </div>
-            <div class="fb-spacer"></div>
-            <span class="fb-result"><b id="fbVisible">0</b> / <span id="fbTotal">0</span> eventos</span>
             <button type="button" class="fb-clear" id="fbClear" disabled>✕ Limpiar</button>
           </div>
 
@@ -142,7 +140,8 @@
                 <th style="width:160px">Timestamp</th>
                 <th style="width:110px">Tipo</th>
                 <th>Regla</th>
-                <th style="width:150px">IP origen</th>
+                <th style="width:160px">IP origen</th>
+                <th style="width:128px">Riesgo</th>
                 <th style="width:100px">Severidad</th>
                 <th style="width:90px;text-align:right">Duración</th>
               </tr></thead>

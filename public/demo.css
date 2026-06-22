@@ -246,8 +246,9 @@ body {
 .panel-count {
   font-family: var(--mono); font-size: 11px; color: var(--text-dim);
   background: var(--bg); border: 1px solid var(--border);
-  border-radius: 5px; padding: 1px 7px;
+  border-radius: 5px; padding: 1px 7px; white-space: nowrap;
 }
+.panel-count b { color: var(--accent); font-weight: 600; }
 .panel-spacer { flex: 1; }
 .live-tag {
   display: flex; align-items: center; gap: 7px;
@@ -320,12 +321,16 @@ body {
 /* ── Filter bar ────────────────────────────────────────── */
 .filterbar {
   animation: fb-in 0.18s ease;
-  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 14px; flex-wrap: nowrap;
   padding: 11px 18px;
   background: linear-gradient(180deg, rgba(0,212,255,0.03), transparent), #010409;
   border-bottom: 1px solid var(--border);
 }
 .filter-field { display: flex; align-items: center; gap: 10px; }
+/* el campo de búsqueda crece para rellenar y empuja "Limpiar" al borde,
+   manteniendo toda la barra en una sola línea */
+.fb-search-field { flex: 1 1 60px; min-width: 0; }
+.fb-search-field .fb-search-wrap { flex: 1; }
 .field-label {
   font-family: var(--mono); font-size: 10px; font-weight: 600;
   letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-faint);
@@ -367,12 +372,6 @@ body {
 .seg-btn.t-alerta,  .seg-btn.s-media   { --c: var(--blue); }
 .seg-btn.s-alta { --c: var(--orange); }
 .seg-btn.s-baja { --c: var(--text-dim); }
-.fb-spacer { flex: 1; }
-.fb-result {
-  font-family: var(--mono); font-size: 11px; color: var(--text-dim);
-  display: flex; align-items: center; gap: 6px;
-}
-.fb-result b { color: var(--accent); font-weight: 600; }
 .fb-clear {
   appearance: none; cursor: pointer;
   font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em;
@@ -398,7 +397,7 @@ body {
   font-family: var(--mono); font-size: 11px;
   height: 34px;
   padding: 0 28px 0 10px;
-  width: 168px;
+  width: 100%; min-width: 0;
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
   transition: border-color 0.13s;
   outline: none;
@@ -431,6 +430,16 @@ body {
 .b-alta    { --fg: var(--orange);   --bgc: var(--orange-bg); --bd: rgba(210,153,34,0.45); }
 .b-media   { --fg: var(--blue);     --bgc: var(--blue-bg);   --bd: rgba(88,166,255,0.38); }
 .b-baja    { --fg: var(--text-dim); --bgc: rgba(139,148,158,0.1); --bd: rgba(139,148,158,0.3); }
+
+/* ── Threat intelligence (columna Riesgo + bandera en IP) ─ */
+.ip-flag { margin-right: 6px; font-size: 13px; line-height: 1; vertical-align: -1px; }
+.cell-intel { white-space: nowrap; }
+.cell-empty { color: var(--text-faint); }
+.intel-group { display: inline-flex; align-items: center; gap: 5px; }
+.b-abuse-low  { --fg: #3fb950; --bgc: rgba(63,185,80,0.12);  --bd: rgba(63,185,80,0.4); }
+.b-abuse-med  { --fg: #d29922; --bgc: rgba(210,153,34,0.12); --bd: rgba(210,153,34,0.45); }
+.b-abuse-high { --fg: #f85149; --bgc: rgba(248,81,73,0.14);  --bd: rgba(248,81,73,0.5); }
+.b-vt         { --fg: #a371f7; --bgc: rgba(163,113,247,0.12); --bd: rgba(163,113,247,0.4); }
 
 /* ── Blocked IPs ───────────────────────────────────────── */
 .blocked-ips { display: flex; flex-direction: column; min-height: 0; }
