@@ -108,7 +108,7 @@
   function openDemo() {
     if (!lightbox) return;
     demoFocus = document.activeElement;
-    if (demoFrame) demoFrame.src = "demo.html"; // siempre una demo fresca
+    if (demoFrame) demoFrame.src = "demo.html?v=2"; // siempre una demo fresca
     lightbox.classList.add("open");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";

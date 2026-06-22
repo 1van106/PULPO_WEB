@@ -1,0 +1,13 @@
+# Cloudflare Pages — control de caché
+# La demo interactiva y sus scripts deben revalidarse en cada carga para que
+# los cambios se vean al instante (ETag → 304 si no cambió, sin gastar ancho de banda).
+/demo.html
+  Cache-Control: public, max-age=0, must-revalidate
+/demo.js
+  Cache-Control: public, max-age=0, must-revalidate
+/demo.css
+  Cache-Control: public, max-age=0, must-revalidate
+/pulpo-store.js
+  Cache-Control: public, max-age=0, must-revalidate
+/pulpo-app.js
+  Cache-Control: public, max-age=0, must-revalidate
